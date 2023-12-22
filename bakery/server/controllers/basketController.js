@@ -1,4 +1,4 @@
-const { Basket, BasketItem, Product, Order } = require('../database/models');
+const { Basket, BasketItem, Product, Order } = require('../models/models');
 
 class BasketController {
   async createOrUpdateBasket(req, res) {
