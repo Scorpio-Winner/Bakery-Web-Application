@@ -25,22 +25,39 @@ class AuthController {
                     expiresIn: "1h",
                 });
 
-                res.status(200).json({ token });
+                res.status(200).json({ token: token, role: "user" });
             } else {
-                const passwordMatch = await bcrypt.compare(password, admin.password);
+                const passwordMatch = await bcrypt.compare(password, company.password);
 
                 if (!passwordMatch) {
                     return res.status(401).json({ error: "Authentication failed" });
                 }
 
-                const token = jwt.sign({ companyId: company.id }, process.env.SECRET_KEY, {
+                const token = jwt.sign({ adminId: admin.id }, process.env.SECRET_KEY, {
                     expiresIn: "1h",
                 });
 
-                res.status(200).json({ token });
+                res.status(200).json({ token: token, role: "admin" });
             }
         } catch (error) {
             res.status(500).json({ error: "Login failed" });
+        }
+    }
+
+    async checkEmail(req, res) {
+        try {
+            const { email } = { ...req.body };
+
+            const user = await User.findOne({ where: { email: email } });
+            const admin = await Admin.findOne({ where: { email: email } });
+
+            if (!user && !admin) {
+                return res.status(200).json({ available: true });
+            }
+
+            return res.status(200).json({ available: false });
+        } catch (error) {
+            res.status(500).json({ error: "Email check failed" });
         }
     }
 }
