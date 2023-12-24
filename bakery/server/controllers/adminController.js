@@ -1,4 +1,4 @@
-const { Admin } = require('../database/models');
+const { Admin } = require('../models/models');
 
 class AdminController {
   async getAll(req, res) {
