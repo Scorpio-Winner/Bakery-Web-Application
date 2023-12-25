@@ -8,7 +8,7 @@ const Profile = () => {
 
   useEffect(() => {
     // Получение данных о профиле пользователя из базы данных
-    axios.get('/api/profile')
+    axios.get('/user/profile/:id')
       .then(response => {
         setUserData(response.data);
       })
