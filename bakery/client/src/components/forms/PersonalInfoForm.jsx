@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { TextField, Button } from '@material-ui/core';
-import { registerUser } from "../../api/authApi";
+import { registerUser } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     height: '100vh',
-    backgroundImage: 'url(your-background-image.jpg)',
+    backgroundImage: 'url(back.png)',
     backgroundSize: 'cover',
   },
   form: {
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '2rem',
     width: '100px',
     height: '100px',
-    backgroundImage: 'url(your-logo-image.jpg)',
+    backgroundImage: 'url(logo.png)',
     backgroundSize: 'cover',
   },
   input: {
@@ -56,6 +56,11 @@ const PersonalInfoForm = () => {
       // Handle empty fields
       return;
     }
+
+    const errorHandler = (errorMessage) => {
+      // Handle the error, e.g., show an error message to the user
+      console.error(errorMessage);
+    };
 
     const userData = {
       firstName,
