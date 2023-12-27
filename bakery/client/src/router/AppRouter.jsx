@@ -35,23 +35,27 @@ const AppRouter = () => {
                 {companyRoutes.map(({ path, Component }) => (
                     <Route key={path} path={path} element={<Component />} exact />
                 ))}
-                <Route key="*" path="*" element={<Navigate to={COMPANY_PROFILE_ROUTE} />} />
+                <Route key="*" path="*" element={<Navigate to={ADMIN_PROFILE_ROUTE} />} />
             </Routes>
         );
     }*/
 
+
+
     <Route key="*" path="*" element={<Navigate to={LOGIN_ROUTE} />} />
 
   /*if (!jwt) {*/
-        return (
-            <Routes>
-                {publicRoutes.map(({ path, Component }) => (
-                    <Route key={path} path={path} element={<Component />} exact />
-                ))}
-                <Route key="*" path="*" element={<Navigate to={LOGIN_ROUTE} />} />
-            </Routes>
-        );
-   /* }*/
+  if (!jwt) {
+    return (
+        <Routes>
+            {publicRoutes.map(({ path, Component }) => (
+                <Route key={path} path={path} element={<Component />} exact />
+            ))}
+            <Route key="*" path="*" element={<Navigate to={LOGIN_ROUTE} />} />
+        </Routes>
+    );
+}
 };
+
 
 export default AppRouter;

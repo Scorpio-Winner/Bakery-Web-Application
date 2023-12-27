@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { TextField, Button, Checkbox,  FormControlLabel, Link } from '@material-ui/core';
+import { TextField, Button, Checkbox,  FormControlLabel} from '@material-ui/core';
+import { Link } from "react-router-dom";
 import { login } from "../api/authApi";
 import logo from "./img/logo.png";
 import back from "./img/back.png";
@@ -111,7 +112,7 @@ const LoginPage = () => {
           sessionStorage.setItem("role", response.data.role);
         }
 
-        navigate("/dashboard");
+        window.location.reload();
       })
       .catch((error) => {
         console.log("Error while logging in:", error);
@@ -125,14 +126,15 @@ const LoginPage = () => {
         <div className={classes.logo} />
         <TextField
           className={classes.input}
-          label="Email"
+          label="Е-мейл"
+          type="email"
           variant="outlined"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
         <TextField
           className={classes.input}
-          label="Password"
+          label="Пароль"
           type="password"
           variant="outlined"
           value={password}
@@ -156,7 +158,7 @@ const LoginPage = () => {
           Войти
         </Button>
         <Link className={classes.registerLink} to={"/register"}>
-          Регистрация
+          РЕГИСТРАЦИЯ
         </Link>
       </form>
     </div>

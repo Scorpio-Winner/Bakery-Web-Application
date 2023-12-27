@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { TextField, Button } from '@material-ui/core';
 import logo from "./img/logo.png";
-import back from "./img/logo.png";
+import back from "./img/back.png";
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {
@@ -75,7 +75,7 @@ const AuthDataForm = ({ onNext, userData }) => {
     }
 
     if (password !== confirmPassword) {
-      setPasswordError("Passwords don't match");
+      setPasswordError("Пароли не совпадают");
       return;
     }
 
@@ -89,14 +89,15 @@ const AuthDataForm = ({ onNext, userData }) => {
         <div className={classes.logo} />
         <TextField
           className={classes.input}
-          label="Email"
+          label="Е-мейл"
+          type="email"
           variant="outlined"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
         <TextField
           className={classes.input}
-          label="Password"
+          label="Пароль"
           type="password"
           variant="outlined"
           value={password}
@@ -104,7 +105,7 @@ const AuthDataForm = ({ onNext, userData }) => {
         />
         <TextField
           className={classes.input}
-          label="Confirm Password"
+          label="Повторите пароль"
           type="password"
           variant="outlined"
           value={confirmPassword}
@@ -117,7 +118,7 @@ const AuthDataForm = ({ onNext, userData }) => {
           variant="contained"
           type="submit"
         >
-          Next
+          Далее
         </Button>
       </form>
     </div>

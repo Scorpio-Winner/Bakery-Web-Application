@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { TextField, Button } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { registerUser } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
 import logo from "./img/logo.png";
 import back from "./img/back.png";
+import uploadIcon from "./img/photoUploud.png";
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {
@@ -34,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundSize: 'cover',
   },
   input: {
+    width: '100%',
     marginBottom: '1rem',
   },
   button: {
@@ -58,6 +61,35 @@ const useStyles = makeStyles((theme) => ({
       textDecoration: 'none',
     },
   },
+  photoContainer: {
+    position: 'relative',
+    width: '120px',
+    height: '120px',
+    borderRadius: '50%',
+    overflow: 'hidden',
+    cursor: 'pointer',
+  },
+  photo: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  },
+  uploadIcon: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '120px',
+    height: '120px',
+    backgroundImage: `url(${uploadIcon})`,
+    backgroundSize: 'cover',
+  },
+  uploadButton: {
+    backgroundColor: 'white',
+    color: 'black',
+    borderRadius: '7px',
+    marginLeft: '1rem',
+  },
 }));
 
 const PersonalInfoForm = () => {
@@ -67,6 +99,7 @@ const PersonalInfoForm = () => {
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
   const [birthdate, setBirthdate] = useState('');
+  const [photo, setPhoto] = useState(null);
 
   const handleRegister = (e) => {
     e.preventDefault();
@@ -87,6 +120,7 @@ const PersonalInfoForm = () => {
       lastName,
       phone,
       birthdate,
+      photo,
     };
 
     registerUser(userData)
@@ -109,10 +143,45 @@ const PersonalInfoForm = () => {
       });
   };
 
+
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files[0];
+    setPhoto(file);
+  };
+
   return (
     <div className={classes.formContainer}>
       <form className={classes.form} onSubmit={handleRegister}>
-        <div className={classes.logo} />
+        <Typography variant="h4" component="h2" style={{ marginBottom: '2rem' }}>
+          Укажите личные данные
+        </Typography>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
+          <div className={classes.photoContainer}>
+            {photo ? (
+              <img src={URL.createObjectURL(photo)} alt="User" className={classes.photo} />
+            ) : (
+              <div className={classes.uploadIcon} />
+            )}
+          </div>
+          <label htmlFor="photo-upload">
+            <Button
+              className={classes.uploadButton}
+              variant="contained"
+              component="span"
+              style={{ fontSize: '0.75rem', borderColor:'black',}}
+              
+            >
+              Загрузить изображение
+            </Button>
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handlePhotoUpload}
+            style={{ display: 'none' }}
+            id="photo-upload"
+          />
+        </div>
         <TextField
           className={classes.input}
           label="First Name"
@@ -144,13 +213,14 @@ const PersonalInfoForm = () => {
           InputLabelProps={{
             shrink: true,
           }}
+          style={{ width: '100%' }}
         />
         <Button
           className={classes.button}
           variant="contained"
           type="submit"
         >
-          Register
+          Готово
         </Button>
       </form>
     </div>
