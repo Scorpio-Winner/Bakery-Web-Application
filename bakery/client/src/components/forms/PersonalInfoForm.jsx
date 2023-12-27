@@ -3,6 +3,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { TextField, Button } from '@material-ui/core';
 import { registerUser } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
+import logo from "./img/logo.png";
+import back from "./img/back.png";
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {
@@ -10,32 +12,50 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     height: '100vh',
-    backgroundImage: 'url(back.png)',
+    width: '100vw',
+    backgroundImage: `url(${back})`,
     backgroundSize: 'cover',
   },
   form: {
-    backgroundColor: 'white',
+    backgroundColor: '#F8F8F8',
     padding: '2rem',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
+    borderRadius: '10px',
+
   },
   logo: {
     marginBottom: '2rem',
-    width: '100px',
-    height: '100px',
-    backgroundImage: 'url(logo.png)',
+    width: '206px',
+    height: '167px',
+    backgroundImage: `url(${logo})`,
     backgroundSize: 'cover',
   },
   input: {
     marginBottom: '1rem',
   },
   button: {
+    width:'60%',
     backgroundColor: '#FED84C',
     color: 'white',
+    borderRadius: '7px',
     '&:hover': {
       backgroundColor: '#FED84C',
+    },
+  },
+  registerLink: {
+    marginTop: '10px',
+    display: 'inline-block',
+    padding: '0.5rem 1rem',
+    backgroundColor: '#CCCCCC',
+    color: '#000000',
+    borderRadius: '7px',
+    textDecoration: 'none',
+    border: '1px solid #000000',
+    '&:hover': {
+      textDecoration: 'none',
     },
   },
 }));

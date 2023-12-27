@@ -6,7 +6,7 @@ import { publicRoutes } from "./publicRoutes";
 import { COMPANY_PROFILE_ROUTE, LOGIN_ROUTE, USER_PROFILE_ROUTE } from "../utils/consts";
 
 const AppRouter = () => {
-   /* const [jwt, setJwt] = useState(localStorage.getItem("jwt"));
+    const [jwt, setJwt] = useState(localStorage.getItem("jwt"));
     const navigate = useNavigate();
 
     useEffect(() => {

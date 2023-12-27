@@ -54,8 +54,9 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '7px',
     textDecoration: 'none',
     border: '1px solid #000000',
-    '&:hover': {
+   '&:hover': {
       textDecoration: 'none',
+      cursor: 'pointer',
     },
   },
 }));
