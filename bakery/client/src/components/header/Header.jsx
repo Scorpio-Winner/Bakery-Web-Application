@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { AppBar, Toolbar, IconButton } from "@mui/material";
 import { Box } from "@mui/system";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -13,6 +13,23 @@ const Header = () => {
     localStorage.removeItem("role");
     window.location.reload();
   };
+  
+  const [scale, setScale] = useState(0.65);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 320) {
+        setScale(0.3);
+      } else {
+        setScale(0.65);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <AppBar position="static" style={{ backgroundColor: "#F8F8F8" }}>
@@ -26,7 +43,7 @@ const Header = () => {
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center",
-            transform: "scale(0.65)",
+            transform: `scale(${scale})`,
           }}
         />
 

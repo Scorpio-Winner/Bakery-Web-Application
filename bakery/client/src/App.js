@@ -1,13 +1,12 @@
-import logo from './logo.svg';
 import { BrowserRouter } from "react-router-dom";
 import AppRouter from "./router/AppRouter";
-import Header from "../src/components/header/Header";
+import MainSection from "./components/pages/mainPage/MainSection";
 import './App.css';
 /* <AppRouter />*/
 function App() {
   return (
            <BrowserRouter>
-               <Header />
+               <MainSection/>
             </BrowserRouter>
 );
 };

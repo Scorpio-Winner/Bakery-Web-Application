@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { publicRoutes } from "./publicRoutes";
 //import { userRoutes } from "./userRoutes";
-//import { companyRoutes } from "./companyRoutes";
-import { COMPANY_PROFILE_ROUTE, LOGIN_ROUTE, USER_PROFILE_ROUTE } from "../utils/consts";
+//import { AdminRoutes } from "./adminRoutes";
+import { ADMIN_PROFILE_ROUTE, LOGIN_ROUTE, USER_PROFILE_ROUTE } from "../utils/consts";
 
 const AppRouter = () => {
     const [jwt, setJwt] = useState(localStorage.getItem("jwt"));
