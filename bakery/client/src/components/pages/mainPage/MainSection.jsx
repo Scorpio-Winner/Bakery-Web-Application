@@ -1,6 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import mainSection from "./mainSection.png";
+import mainSection from "./img/mainSection.png";
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PhoneIcon from '@mui/icons-material/Phone';
 import InventoryIcon from "@mui/icons-material/Inventory";
@@ -10,6 +10,7 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import IconButton from '@material-ui/core/IconButton';
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,11 +68,13 @@ const useStyles = makeStyles((theme) => ({
 
 const MainSection = () => {
   const classes = useStyles();
+  const navigate = useNavigate();
 
   const handleLogoutClick = () => {
     localStorage.removeItem("jwt");
     localStorage.removeItem("role");
     window.location.reload();
+    navigate("/login");
   };
 
   return (
