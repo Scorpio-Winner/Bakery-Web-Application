@@ -6,6 +6,7 @@ const orderRouter = require('./orderRouter')
 const productRouter = require('./productRouter')
 const profileRouter = require('./profileRouter')
 const protectedRouter = require("./protectedRouter");
+const reviewRouter = require("./reviewRouter");
 const authMiddleware = require("../middleware/authMiddleware");
 
 router.use('/auth', authRouter)
@@ -13,6 +14,7 @@ router.use('/basket', basketRouter)
 router.use('/order', orderRouter)
 router.use('/device', productRouter)
 router.use('/device', profileRouter)
+router.use('/reviews', reviewRouter)
 router.use("/api", authMiddleware, protectedRouter);
 
 module.exports = router

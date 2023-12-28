@@ -1,12 +1,12 @@
 import { BrowserRouter } from "react-router-dom";
 import AppRouter from "./router/AppRouter";
-import InstSection from "./components/pages/mainPage/InstSection";
+import ReviewsSection from "./components/pages/mainPage/ReviewsSection";
 import './App.css';
 /* <AppRouter />*/
 function App() {
   return (
            <BrowserRouter>
-               <InstSection/>
+               <ReviewsSection/>
             </BrowserRouter>
 );
 };
