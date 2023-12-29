@@ -11,7 +11,7 @@ const ReviewSlider = () => {
   useEffect(() => {
     // Запрос на сервер для получения всех отзывов с данными о пользователе и заказе
     axios
-      .get('/reviews?_expand=Order&_expand=Order.User')
+      .get('/api/reviews')
       .then(response => {
         setReviews(response.data);
       })
@@ -58,43 +58,58 @@ const ReviewSlider = () => {
       boxShadow={1}
       style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover' }}
     >
-      <Typography variant="h5" align="center" gutterBottom color={'white'}>
+      <Typography variant="h5" align="center" gutterBottom color={'white'} marginBottom={'3vh'}>
         Почитайте отзывы довольных клиентов
       </Typography>
-      {reviews.length > 0 ? (
-        <Box display="flex" alignItems="center" flexDirection="column" marginBottom="16px">
-          <Typography variant="h4" align="center">
-            {getStarRating(reviews[currentReviewIndex].rating)}
-          </Typography>
-          <Typography variant="body1" align="center" gutterBottom>
-            {reviews[currentReviewIndex].short_review}
-          </Typography>
-          <Typography variant="body2" align="center" color="textSecondary">
-            {reviews[currentReviewIndex].description}
-          </Typography>
-        </Box>
-      ) : (
-        <Typography variant="body1" align="center" color={'white'}>
-          Нет доступных отзывов.
-        </Typography>
-      )}
-      <Box display="flex" alignItems="center">
-        {reviews.length > 0 && (
-          <Avatar
-            alt="Аватар"
-            src={reviews[currentReviewIndex].Order.User.avatar}
-            sx={{ width: 64, height: 64, marginRight: '16px' }}
-          >
-            {!reviews[currentReviewIndex].Order.User.avatar && '👤'}
-          </Avatar>
-        )}
-        {reviews.length > 0 && (
-          <Box>
-            <Typography variant="subtitle1" gutterBottom>
-              {reviews[currentReviewIndex].Order.User.name} {reviews[currentReviewIndex].Order.User.surname}
+      <Box
+        bgcolor="white"
+        p={2}
+        borderRadius="4px"
+        display="flex"
+        alignItems="center"
+        flexDirection="column"
+        marginBottom="16px"
+        gap={'3vh'}
+      >
+        {reviews.length > 0 ? (
+          <>
+            <Typography variant="h4" align="center" marginBottom={'1vh'} >
+              {getStarRating(reviews[currentReviewIndex].rating)}
             </Typography>
-          </Box>
+            <Typography variant="body1" align="center" gutterBottom>
+              «{reviews[currentReviewIndex].short_review}»
+            </Typography>
+            <Typography variant="body2" align="center" color="textSecondary">
+              «{reviews[currentReviewIndex].description}»
+            </Typography>
+          </>
+        ) : (
+          <Typography variant="body1" align="center" color={'white'}>
+            Нет доступных отзывов.
+          </Typography>
         )}
+         {/* {reviews.length > 0 && (
+          <Box display="flex" alignItems="center" marginTop="16px">
+            <Avatar
+              alt="Аватар"
+              src={src={
+                companyReview.User.id !== undefined
+                    ? `http://localhost:5000/api/users/${
+                          companyReview.User.id
+                      }/avatar?jwt=${localStorage.getItem("jwt")}`
+                    : ""
+            }}
+              sx={{ width: 64, height: 64, marginRight: '16px' }}
+            >
+              {!reviews[currentReviewIndex].Order.User.avatar && '👤'}
+            </Avatar>
+            <Box>
+              <Typography variant="subtitle1" gutterBottom>
+                {reviews[currentReviewIndex].Order.User.name} {reviews[currentReviewIndex].Order.User.surname}
+              </Typography>
+            </Box>
+          </Box> 
+        )} */}
       </Box>
       {reviews.length > 1 && (
         <Box display="flex" alignItems="center" justifyContent="center" marginTop="16px">

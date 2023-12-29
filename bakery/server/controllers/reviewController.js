@@ -1,4 +1,4 @@
-const { Review, Order } = require('../models/models');
+const { Review, Order, User } = require('../models/models');
 
 class ReviewController {
   async createReview(req, res) {
@@ -30,8 +30,11 @@ class ReviewController {
   }
 
   async getAllReviews(req, res) {
+    console.log('123');
     try {
-      const reviews = await Review.findAll();
+      const reviews = await Review.findAll({
+        include: [{ model: Order, include: [{ model: User }] }],
+    });
       return res.json(reviews);
     } catch (err) {
       console.error(err);
