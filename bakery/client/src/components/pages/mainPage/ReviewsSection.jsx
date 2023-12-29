@@ -58,7 +58,7 @@ const ReviewSlider = () => {
       boxShadow={1}
       style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover' }}
     >
-      <Typography variant="h5" align="center" gutterBottom color={'white'} marginBottom={'3vh'}>
+      <Typography variant="h5" align="center" style={{color:'white', marginBottom: '5vh' }}>
         Почитайте отзывы довольных клиентов
       </Typography>
       <Box

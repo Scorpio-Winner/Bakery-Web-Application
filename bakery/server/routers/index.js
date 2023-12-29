@@ -12,8 +12,8 @@ const authMiddleware = require("../middleware/authMiddleware");
 router.use('/auth', authRouter)
 router.use('/basket', basketRouter)
 router.use('/order', orderRouter)
-router.use('/device', productRouter)
-router.use('/device', profileRouter)
+router.use('/products', productRouter)
+router.use('/profile', profileRouter)
 router.use('/reviews', reviewRouter)
 router.use("/api", authMiddleware, protectedRouter);
 

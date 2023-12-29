@@ -4,7 +4,7 @@ class ProductController {
   async getAllProducts(req, res) {
     try {
       const products = await Product.findAll();
-      return res.status(200).json({ products });
+      return res.json(products);
     } catch (err) {
       console.error(err);
       return res.status(500).json({ error: 'Ошибка сервера' });
