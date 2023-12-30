@@ -58,16 +58,30 @@ const useStyles = makeStyles((theme) => ({
 const ProductPage = () => {
   const classes = useStyles();
   const [products, setProducts] = useState([]);
+  const [avatars, setAvatars] = useState({});
   const [selectedQuantities, setSelectedQuantities] = useState({});
 
   useEffect(() => {
-    axios
-      .get('/api/products')
+    // Получаем продукты
+    axios.get('/api/products')
       .then(response => {
         setProducts(response.data);
+        // После получения продуктов, запрашиваем фотографии для каждого продукта
+        response.data.forEach(product => {
+          axios.get(`/api/products/avatar/${product.id}`, { responseType: 'blob' })
+            .then(res => {
+              const avatarUrl = URL.createObjectURL(res.data);
+              setAvatars(prevState => ({ ...prevState, [product.id]: avatarUrl }));
+            })
+            .catch(error => {
+              console.error(`Error fetching avatar for product ID ${product.id}:`, error);
+              // Можно установить заглушку в случае ошибки получения фотографии
+              setAvatars(prevState => ({ ...prevState, [product.id]: 'здесь__заглушка_для_фото' }));
+            });
+        });
       })
       .catch(error => {
-        console.error(error);
+        console.error('Error fetching products:', error);
       });
   }, []);
 
@@ -95,6 +109,29 @@ const ProductPage = () => {
     setSelectedQuantities(updatedQuantities);
   };
 
+  const fetchAvatars = (products) => {
+    const avatarRequests = products.map((product) =>
+      axios.get(`/api/products/avatar/${product.id}`, { responseType: 'blob' })
+    );
+
+    axios
+      .all(avatarRequests)
+      .then(
+        axios.spread((...responses) => {
+          const updatedAvatars = {};
+          responses.forEach((response, index) => {
+            const productId = products[index].id;
+            const avatarUrl = URL.createObjectURL(response.data);
+            updatedAvatars[productId] = avatarUrl;
+          });
+          setAvatars(updatedAvatars);
+        })
+      )
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   return (
     <div className={classes.root}>
       <Typography variant="h4" align="center" style={{ marginBottom: '5vh' }}>
@@ -103,10 +140,7 @@ const ProductPage = () => {
       <div className={classes.container}>
         {products.map((product) => (
           <Card key={product.id} className={classes.card}>
-            <div
-              className={classes.imageContainer}
-              style={{ backgroundImage: `url(/product/${product.id}.png)` }}
-            />
+              <img src={avatars[product.id]} alt={product.name} />
             <CardContent>
               <Typography variant="h6" component="h2" gutterBottom>
                 {product.name}

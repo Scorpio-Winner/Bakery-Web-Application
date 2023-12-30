@@ -64,15 +64,29 @@ class UserController {
       return res.sendStatus(400);
     }
 
-    if ((await User.findOne({ where: { id: id } })) == null) {
-      return res.sendStatus(404);
-    }
-
     try {
+
+
+      const existingUser = await User.findOne({ where: { id: id } });
+
+      if (existingUser == null) {
+        return res.sendStatus(404);
+      }
+
+      if (user.email !== existingUser.email) {
+        if ((await User.findOne({ where: { email: user.email } })) !== null) {
+          return res.status(400).json({ error: "Email is taken" });
+        }
+      }
+
+      ///user.password = await bcrypt.hash(user.password, 10);
+
       await User.update(user, { where: { id: id } });
 
       return res.sendStatus(204);
     } catch (err) {
+
+      console.log(err);
       return res.sendStatus(500);
     }
   }

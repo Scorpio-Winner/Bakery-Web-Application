@@ -1,4 +1,6 @@
 const { Product } = require('../models/models');
+const path = require("path");
+const fs = require("fs");
 
 class ProductController {
   async getAllProducts(req, res) {
@@ -27,6 +29,27 @@ class ProductController {
       return res.status(500).json({ error: 'Ошибка сервера' });
     }
   }
+
+  async getAvatar(req, res) {
+    try {
+        const { id } = req.params;
+
+        if (isNaN(id)) {
+            return res.sendStatus(400);
+        }
+
+        const imagePath = path.join(__dirname, "../", "avatars", "product", id + ".png");
+
+        if (!fs.existsSync(imagePath)) {
+            return res.sendStatus(204);
+        }
+
+        return res.sendFile(imagePath);
+    } catch (err) {
+        console.log(err);
+        return res.sendStatus(500);
+    }
+}
 }
 
 module.exports = new ProductController();
