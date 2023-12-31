@@ -65,80 +65,66 @@ const useStyles = makeStyles((theme) => ({
 const LoginPage = () => {
   const classes = useStyles();
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password: "",
+});
 
-  const handleLogin = (e) => {
-    e.preventDefault();
+    const submit = async () => {
+      const response = await login(loginData);
 
-    // Validate email and password
-    if (!email || !password) {
-      // Handle empty fields
-      return;
-    }
-
-    const errorHandler = (errorMessage) => {
-      // Handle the error, e.g., show an error message to the user
-      console.error(errorMessage);
-    };
-
-    const userData = {
-      email,
-      password,
-      rememberMe,
-    };
-
-    login(userData)
-      .then((response) => {
-        if (!response) {
-          errorHandler("Сервис временно недоступен");
+      if (!response) {
+          console.log("Сервис временно недоступен")
           return;
-        }
+      }
 
-        if (response.status >= 300) {
-          errorHandler("Ошибка при авторизации. Код: " + response.status);
+      if (response.status === 500) {
+          console.log("Повторите попытку позже");
           return;
-        }
+      }
 
-        // Handle successful login
-        if (rememberMe) {
-          // Save token to local storage for persistent session
-          localStorage.setItem('token', response.data.token);
-          localStorage.setItem("role", response.data.role);
-        } else {
-          // Save token to session storage for one session
-          sessionStorage.setItem('token', response.data.token);
-          sessionStorage.setItem("role", response.data.role);
-        }
+      if (response.status >= 300) {
+          console.log("Неверные данные аккаунта");
+          return;
+      }
 
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.log("Error while logging in:", error);
-        // Handle error
-      });
+      if (rememberMe) {
+        // Save token to local storage for persistent session
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem("role", response.data.role);
+      } else {
+        // Save token to session storage for one session
+        sessionStorage.setItem('token', response.data.token);
+        sessionStorage.setItem("role", response.data.role);
+      }
+
+
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem("role", response.data.role);
+
+      //window.location.reload();
   };
 
   return (
     <div className={classes.formContainer}>
-      <form className={classes.form} onSubmit={handleLogin}>
+      <form className={classes.form}>
         <div className={classes.logo} />
         <TextField
           className={classes.input}
           label="Е-мейл"
           type="email"
           variant="outlined"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={loginData.email}
+          onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
         />
         <TextField
           className={classes.input}
           label="Пароль"
           type="password"
           variant="outlined"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={loginData.password}
+          onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
         />
         <FormControlLabel
           control={
@@ -154,6 +140,7 @@ const LoginPage = () => {
           className={classes.button}
           variant="contained"
           type="submit"
+          onClick={submit}
         >
           Войти
         </Button>

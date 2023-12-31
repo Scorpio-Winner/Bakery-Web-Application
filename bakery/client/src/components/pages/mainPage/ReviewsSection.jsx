@@ -11,7 +11,7 @@ const ReviewSlider = () => {
   useEffect(() => {
     // Запрос на сервер для получения всех отзывов с данными о пользователе и заказе
     axios
-      .get('/api/reviews')
+      .get('/reviews')
       .then(response => {
         setReviews(response.data);
       })

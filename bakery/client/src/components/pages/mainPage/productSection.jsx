@@ -63,12 +63,12 @@ const ProductPage = () => {
 
   useEffect(() => {
     // Получаем продукты
-    axios.get('/api/products')
+    axios.get('/products')
       .then(response => {
         setProducts(response.data);
         // После получения продуктов, запрашиваем фотографии для каждого продукта
         response.data.forEach(product => {
-          axios.get(`/api/products/avatar/${product.id}`, { responseType: 'blob' })
+          axios.get(`/products/avatar/${product.id}`, { responseType: 'blob' })
             .then(res => {
               const avatarUrl = URL.createObjectURL(res.data);
               setAvatars(prevState => ({ ...prevState, [product.id]: avatarUrl }));

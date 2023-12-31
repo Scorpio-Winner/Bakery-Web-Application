@@ -1,5 +1,7 @@
 const { User } = require("../models/models");
 const bcrypt = require("bcrypt");
+const fs = require("fs");
+const path = require("path");
 
 class UserController {
   async getAll(req, res) {
@@ -79,7 +81,7 @@ class UserController {
         }
       }
 
-      ///user.password = await bcrypt.hash(user.password, 10);
+      user.password = await bcrypt.hash(user.password, 10);
 
       await User.update(user, { where: { id: id } });
 

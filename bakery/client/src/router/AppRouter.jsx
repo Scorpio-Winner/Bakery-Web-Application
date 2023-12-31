@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { publicRoutes } from "./publicRoutes";
-//import { userRoutes } from "./userRoutes";
-//import { AdminRoutes } from "./adminRoutes";
-import { ADMIN_PROFILE_ROUTE, LOGIN_ROUTE, USER_PROFILE_ROUTE } from "../utils/consts";
+import { userRoutes } from "./userRoutes";
+//import { adminRoutes } from "./adminRoutes";
+import { ADMIN_ORDERS_ROUTE, LOGIN_ROUTE, USER_MAIN_MENU_ROUTE } from "../utils/consts";
 
 const AppRouter = () => {
     const [jwt, setJwt] = useState(localStorage.getItem("jwt"));
@@ -18,44 +18,38 @@ const AppRouter = () => {
         window.addEventListener("storage", handleStorageChange);
     }, [navigate]);
 
-    /*if (jwt && localStorage.getItem("role") === "user") {
+    if (jwt && localStorage.getItem("role") === "user") {
         return (
             <Routes>
                 {userRoutes.map(({ path, Component }) => (
                     <Route key={path} path={path} element={<Component />} exact />
                 ))}
-                <Route key="*" path="*" element={<Navigate to={USER_PROFILE_ROUTE} />} />
+                <Route key="*" path="*" element={<Navigate to={USER_MAIN_MENU_ROUTE} />} />
             </Routes>
         );
     }
 
-    if (jwt && localStorage.getItem("role") === "company") {
+    // if (jwt && localStorage.getItem("role") === "admin") {
+    //     return (
+    //         <Routes>
+    //             {adminRoutes.map(({ path, Component }) => (
+    //                 <Route key={path} path={path} element={<Component />} exact />
+    //             ))}
+    //             <Route key="*" path="*" element={<Navigate to={ADMIN_ORDERS_ROUTE} />} />
+    //         </Routes>
+    //     );
+    // }
+
+    if (!jwt) {
         return (
             <Routes>
-                {companyRoutes.map(({ path, Component }) => (
+                {publicRoutes.map(({ path, Component }) => (
                     <Route key={path} path={path} element={<Component />} exact />
                 ))}
-                <Route key="*" path="*" element={<Navigate to={ADMIN_PROFILE_ROUTE} />} />
+                <Route key="*" path="*" element={<Navigate to={LOGIN_ROUTE} />} />
             </Routes>
         );
-    }*/
-
-
-
-    <Route key="*" path="*" element={<Navigate to={LOGIN_ROUTE} />} />
-
-  /*if (!jwt) {*/
-  if (!jwt) {
-    return (
-        <Routes>
-            {publicRoutes.map(({ path, Component }) => (
-                <Route key={path} path={path} element={<Component />} exact />
-            ))}
-            <Route key="*" path="*" element={<Navigate to={LOGIN_ROUTE} />} />
-        </Routes>
-    );
-}
+    }
 };
-
 
 export default AppRouter;

@@ -10,6 +10,10 @@ class AuthController {
             const user = await User.findOne({ where: { email: email } });
             const admin = await Admin.findOne({ where: { email: email } });
 
+
+            console.log('User:', user);
+            console.log('Admin:', admin);
+
             if (!user && !admin) {
                 return res.status(401).json({ error: "Authentication failed" });
             }
@@ -21,13 +25,21 @@ class AuthController {
                     return res.status(401).json({ error: "Authentication failed" });
                 }
 
+                if(password ===user.password){
+                    const token = jwt.sign({ userId: user.id }, process.env.SECRET_KEY, {
+                        expiresIn: "1h",
+                    });
+    
+                    res.status(200).json({ token: token, role: "user" });
+                }
+
                 const token = jwt.sign({ userId: user.id }, process.env.SECRET_KEY, {
                     expiresIn: "1h",
                 });
 
                 res.status(200).json({ token: token, role: "user" });
-            } else {
-                const passwordMatch = await bcrypt.compare(password, company.password);
+            } else if (admin){
+                const passwordMatch = await bcrypt.compare(password, admin.password);
 
                 if (!passwordMatch) {
                     return res.status(401).json({ error: "Authentication failed" });
@@ -49,9 +61,9 @@ class AuthController {
             const { email } = { ...req.body };
 
             const user = await User.findOne({ where: { email: email } });
-            const admin = await Admin.findOne({ where: { email: email } });
+            const company = await Company.findOne({ where: { email: email } });
 
-            if (!user && !admin) {
+            if (!user && !company) {
                 return res.status(200).json({ available: true });
             }
 
