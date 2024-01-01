@@ -71,10 +71,16 @@ const MainSection = () => {
   const navigate = useNavigate();
 
   const handleLogoutClick = () => {
-    localStorage.removeItem("jwt");
+    localStorage.removeItem("token");
     localStorage.removeItem("role");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("role");
     window.location.reload();
     navigate("/login");
+  };
+
+  const handleProfileClick = () => {
+    navigate("/profile");
   };
 
   return (
@@ -132,7 +138,7 @@ const MainSection = () => {
           </IconButton>
 
           {/* Профиль */}
-          <IconButton color="inherit">
+          <IconButton color="inherit" onClick={handleProfileClick}>
             <Box
               sx={{
                 display: "flex",

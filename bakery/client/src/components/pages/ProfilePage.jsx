@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Header from '../header/Header';
 import { Avatar, Button, Typography, Grid, TextField } from '@mui/material';
+import { getProfile, updateUserInfo, } from "../api/userApi";
 import axios from 'axios';
 
 const Profile = () => {
@@ -8,31 +9,60 @@ const Profile = () => {
   const [editMode, setEditMode] = useState(false);
   const [editedData, setEditedData] = useState({});
 
+  // useEffect(() => {
+  //   // Получение данных о профиле пользователя из базы данных
+  //   axios.get('/profile/3')
+  //     .then(response => {
+  //       setUserData(response.data);
+  //       setEditedData(response.data);
+  //     })
+  //     .catch(error => {
+  //       console.error('Ошибка при получении данных о профиле:', error);
+  //     });
+  // }, []);
+
+
   useEffect(() => {
-    // Получение данных о профиле пользователя из базы данных
-    axios.get('/api/profile/3')
-      .then(response => {
+    const loadData = async () => {
+        const response = await getProfile();
+
+        if (!response) {
+            console.log("Сервис временно недоступен");
+            return;
+        }
+
+        if (response.status === 401) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("role");
+            sessionStorage.removeItem("token");
+            sessionStorage.removeItem("role");
+            window.location.reload();
+        }
+
+        if (response.status >= 300) {
+            console.log("Ошибка при загрузке профиля. Код: " + response.status);
+            console.log(response);
+            return;
+        }
+
         setUserData(response.data);
         setEditedData(response.data);
-      })
-      .catch(error => {
-        console.error('Ошибка при получении данных о профиле:', error);
-      });
-  }, []);
+    };
 
-  const handleEdit = () => {
+    loadData();
+}, []);
+
+
+  const handleEdit = async () => {
     if (editMode) {
       // Отправка измененных данных на сервер
      // axios.put(`/api/profile/update/${userData.id}`, editedData)
-      axios.put(`/api/profile/update/3`, editedData)
-        .then(response => {
-          console.log('Данные профиля успешно обновлены:', response.data);
-          setUserData(editedData);
-          setEditMode(false);
-        })
-        .catch(error => {
-          console.error('Ошибка при обновлении данных профиля:', error);
-        });
+
+     const response = await updateUserInfo(userData.id, editedData);
+
+    setUserData(editedData);
+    setEditMode(false);
+
     } else {
       setEditMode(true);
     }

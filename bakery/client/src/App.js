@@ -7,7 +7,7 @@ import './App.css';
 function App() {
   return (
            <BrowserRouter>
-               <Backet/>
+               <AppRouter/>
             </BrowserRouter>
 );
 };

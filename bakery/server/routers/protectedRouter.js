@@ -4,7 +4,13 @@ const adminController = require("../controllers/adminController");
 
 const router = new Router();
 
-router.get("/users", userController.getAll);
+router.get("/user", userController.getProfile);
+router.put("/user/update/:id", userController.update);
+
+
+
+
+
 router.get("/admins", adminController.getAll);
 
 module.exports = router;

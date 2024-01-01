@@ -6,19 +6,21 @@ import { userRoutes } from "./userRoutes";
 import { ADMIN_ORDERS_ROUTE, LOGIN_ROUTE, USER_MAIN_MENU_ROUTE } from "../utils/consts";
 
 const AppRouter = () => {
-    const [jwt, setJwt] = useState(localStorage.getItem("jwt"));
+    const [token, setToken] = useState(localStorage.getItem("token"));
+    const [tokenSession, setTokenSession] = useState(sessionStorage.getItem("token"));
     const navigate = useNavigate();
 
     useEffect(() => {
         const handleStorageChange = () => {
-            setJwt(localStorage.getItem("jwt"));
+            setToken(localStorage.getItem("token"));
+            setTokenSession(sessionStorage.getItem("token"));
             navigate("/");
         };
 
         window.addEventListener("storage", handleStorageChange);
     }, [navigate]);
 
-    if (jwt && localStorage.getItem("role") === "user") {
+    if ((token && localStorage.getItem("role") === "user") || (tokenSession && sessionStorage.getItem("role") === "user")) {
         return (
             <Routes>
                 {userRoutes.map(({ path, Component }) => (
@@ -29,7 +31,7 @@ const AppRouter = () => {
         );
     }
 
-    // if (jwt && localStorage.getItem("role") === "admin") {
+    // if ((token && localStorage.getItem("role") === "admin") || (tokenSession && sessionStorage.getItem("admin") === "user")) {
     //     return (
     //         <Routes>
     //             {adminRoutes.map(({ path, Component }) => (
@@ -40,7 +42,7 @@ const AppRouter = () => {
     //     );
     // }
 
-    if (!jwt) {
+    if (!token || !tokenSession) {
         return (
             <Routes>
                 {publicRoutes.map(({ path, Component }) => (

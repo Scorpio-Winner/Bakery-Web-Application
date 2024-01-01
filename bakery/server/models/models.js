@@ -57,7 +57,7 @@ const Review = sequelize.define('review', {
 {timestamps: false});
 
 User.hasOne(Basket);
-Basket.belongsTo(User);
+Basket.hasOne(User);
 
 User.hasMany(Order);
 Order.belongsTo(User);

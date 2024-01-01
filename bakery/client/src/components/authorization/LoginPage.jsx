@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import { login } from "../api/authApi";
 import logo from "./img/logo.png";
 import back from "./img/back.png";
-import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {
@@ -64,7 +63,6 @@ const useStyles = makeStyles((theme) => ({
 
 const LoginPage = () => {
   const classes = useStyles();
-  const navigate = useNavigate();
   const [rememberMe, setRememberMe] = useState(false);
   const [loginData, setLoginData] = useState({
     email: "",
@@ -72,6 +70,7 @@ const LoginPage = () => {
 });
 
     const submit = async () => {
+
       const response = await login(loginData);
 
       if (!response) {
@@ -98,12 +97,8 @@ const LoginPage = () => {
         sessionStorage.setItem('token', response.data.token);
         sessionStorage.setItem("role", response.data.role);
       }
-
-
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem("role", response.data.role);
-
-      //window.location.reload();
+      
+      window.location.reload();
   };
 
   return (
@@ -139,7 +134,7 @@ const LoginPage = () => {
         <Button
           className={classes.button}
           variant="contained"
-          type="submit"
+          
           onClick={submit}
         >
           Войти

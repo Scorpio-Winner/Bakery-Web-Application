@@ -39,6 +39,30 @@ class UserController {
     }
   }
 
+  async getProfile(req, res) {
+    const id = req.userId;
+
+    if (isNaN(id)) {
+      return res.sendStatus(400);
+    }
+
+    try {
+      const user = await User.findOne({
+        where: { id: id },
+        attributes: { exclude: ["password"] },
+      });
+
+      if (user == null) {
+        return res.sendStatus(404);
+      }
+
+      return res.json(user);
+    } catch (err) {
+      return res.sendStatus(500);
+    }
+  }
+
+
   async create(req, res) {
     try {
       const user = { ...req.body };
@@ -81,7 +105,7 @@ class UserController {
         }
       }
 
-      user.password = await bcrypt.hash(user.password, 10);
+     // user.password = await bcrypt.hash(user.password, 10);
 
       await User.update(user, { where: { id: id } });
 
