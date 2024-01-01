@@ -5,8 +5,10 @@ import PersonIcon from "@mui/icons-material/Person";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import InventoryIcon from '@mui/icons-material/Inventory';
 import logo from "./logo.png";
+import { useNavigate } from "react-router-dom";
 
 const OrdersHeader = () => {
+  const navigate = useNavigate();
   const handleLogoutClick = () => {
     localStorage.removeItem("jwt");
     localStorage.removeItem("role");
@@ -34,7 +36,10 @@ const OrdersHeader = () => {
     <AppBar position="static" style={{ backgroundColor: "#F8F8F8" }}>
       <Toolbar style={{ justifyContent: "center" }}>
         {/* Лого */}
-        <div
+        <div 
+          onClick={() => {
+            navigate("/main");
+          }}
           style={{
             backgroundImage: `url(${logo})`,
             width: "206px",

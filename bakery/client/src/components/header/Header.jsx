@@ -6,8 +6,10 @@ import PersonIcon from "@mui/icons-material/Person";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import InventoryIcon from '@mui/icons-material/Inventory';
 import logo from "./logo.png";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const navigate = useNavigate();
   const handleLogoutClick = () => {
     localStorage.removeItem("jwt");
     localStorage.removeItem("role");
@@ -31,11 +33,19 @@ const Header = () => {
     };
   }, []);
 
+
+  const handleLogoClick = () => {
+    navigate("/main");
+  };
+
   return (
     <AppBar position="static" style={{ backgroundColor: "#F8F8F8" }}>
       <Toolbar>
         {/* Лого */}
-        <div
+        <div 
+          onClick={() => {
+            navigate("/main");
+          }}
           style={{
             backgroundImage: `url(${logo})`,
             width: "206px",
@@ -44,8 +54,10 @@ const Header = () => {
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center",
             transform: `scale(${scale})`,
-          }}
+            cursor: "pointer", 
+          }} 
         />
+
 
         {/* Иконки */}
         <div style={{ marginLeft: "auto" }}>
