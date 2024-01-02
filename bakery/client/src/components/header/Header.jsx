@@ -45,6 +45,7 @@ const Header = () => {
         <div 
           onClick={() => {
             navigate("/main");
+            window.location.reload()
           }}
           style={{
             backgroundImage: `url(${logo})`,
@@ -62,7 +63,10 @@ const Header = () => {
         {/* Иконки */}
         <div style={{ marginLeft: "auto" }}>
           {/* Заказы */}
-          <IconButton color="inherit">
+          <IconButton color="inherit"  onClick={() => {
+            navigate("/orders");
+            window.location.reload()
+          }}>
             <Box
               sx={{
                 display: "flex",
@@ -81,6 +85,7 @@ const Header = () => {
           {/* Корзина */}
           <IconButton color="inherit" onClick={() => {
             navigate("/basket");
+            window.location.reload()
           }}>
           <Box
               sx={{
@@ -100,6 +105,7 @@ const Header = () => {
           {/* Профиль */}
           <IconButton color="inherit" onClick={() => {
             navigate("/profile");
+            window.location.reload()
           }}>
           <Box
               sx={{

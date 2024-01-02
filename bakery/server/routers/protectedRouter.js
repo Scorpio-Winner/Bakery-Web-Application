@@ -4,6 +4,7 @@ const adminController = require("../controllers/adminController");
 const basketItemController = require("../controllers/basketItemController");
 const orderController = require("../controllers/orderController");
 
+
 const router = new Router();
 
 router.get("/user", userController.getProfile);
@@ -16,6 +17,9 @@ router.delete("/delete-items/:basketId", basketItemController.deleteItemsByBaske
 
 
 router.post("/create-order", orderController.createOrder);
+router.get("/completed-orders/:id", orderController.getCompletedOrders);
+router.get("/in-process-orders/:id", orderController.getInProcessOrders);
+
 
 
 

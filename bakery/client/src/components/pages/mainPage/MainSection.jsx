@@ -87,6 +87,10 @@ const MainSection = () => {
     navigate("/basket");
   };
 
+  const handleOrdersClick = () => {
+    navigate("/orders");
+  };
+
   return (
     <div className={classes.root}>
       <div className={classes.header}>
@@ -108,7 +112,7 @@ const MainSection = () => {
         </div>
         <div>
           {/* Заказы */}
-          <IconButton color="inherit">
+          <IconButton color="inherit" onClick={handleOrdersClick}>
             <Box
               sx={{
                 display: "flex",

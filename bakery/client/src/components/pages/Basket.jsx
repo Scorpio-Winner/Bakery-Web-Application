@@ -256,7 +256,7 @@ const handleClearBasket = async () => {
         variant="contained"
         color="primary"
         className={classes.button}
-        disabled={!deliveryAddress || getTotalPrice()==0}
+        disabled={!deliveryAddress || getTotalPrice()===0}
         onClick={handleOrderSubmit}
       >
         Оформить
@@ -265,7 +265,7 @@ const handleClearBasket = async () => {
         variant="contained"
         color="primary"
         className={classes.button}
-        disabled={getTotalPrice()==0}
+        disabled={getTotalPrice()===0}
         onClick={handleClearBasket}
       >
         Очистить корзину

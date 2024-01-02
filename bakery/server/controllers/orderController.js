@@ -1,4 +1,6 @@
 const { Order, Basket, Product } = require('../models/models');
+const { Op } = require('sequelize');
+
 
 class OrderController {
   async createOrder(req, res) {
@@ -21,6 +23,52 @@ class OrderController {
       return res.status(500).json({ error: 'Ошибка сервера' });
     }
   }
+
+
+  async getCompletedOrders(req, res) {
+    const  userId  = req.params.id;
+  
+    try {
+      const orders = await Order.findAll({
+        where: {
+          userId: userId,
+          status: { [Op.or]: ['Выполнен', 'Отменен'] } // Используем оператор [Op.or] для поиска по разным статусам
+        }
+      });
+  
+      if (!orders || orders.length === 0) {
+        return res.status(404).json({ message: 'Заказы не найдены для данного пользователя и статуса' });
+      }
+  
+      return res.status(200).json(orders);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Ошибка сервера при поиске заказов' });
+    }
+  }
+
+  async getInProcessOrders(req, res) {
+    const  userId  = req.params.id;
+  
+    try {
+      const orders = await Order.findAll({
+        where: {
+          userId: userId,
+          status: { [Op.or]: ['В процессе', 'Сформирован'] } // Используем оператор [Op.or] для поиска по разным статусам
+        }
+      });
+  
+      if (!orders || orders.length === 0) {
+        return res.status(404).json({ message: 'Заказы не найдены для данного пользователя и статуса' });
+      }
+  
+      return res.status(200).json(orders);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Ошибка сервера при поиске заказов' });
+    }
+  }
+  
   
 
   async getOrder(req, res) {

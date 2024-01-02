@@ -56,12 +56,16 @@ const OrdersHeader = () => {
 
 
         {/* Текущие заказы */}
-        <Button variant="outlined" sx={{ color: "#EF6C00", borderColor: "#EF6C00", textTransform: "none", margin: "0 5vw" }}>
+        <Button variant="outlined" sx={{ color: "#EF6C00", borderColor: "#EF6C00", textTransform: "none", margin: "0 5vw" }} onClick={() => {
+            navigate("/current-orders");
+          }}>
           Текущие заказы
         </Button>
 
         {/* Завершенные заказы */}
-        <Button variant="outlined" sx={{ color: "#EF6C00", borderColor: "#EF6C00", textTransform: "none", margin: "0 2vw" }}>
+        <Button variant="outlined" sx={{ color: "#EF6C00", borderColor: "#EF6C00", textTransform: "none", margin: "0 2vw" }} onClick={() => {
+            navigate("/completed-orders");
+          }}>
           Завершенные заказы
         </Button>
 

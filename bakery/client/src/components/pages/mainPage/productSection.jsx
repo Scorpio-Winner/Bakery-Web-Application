@@ -65,6 +65,7 @@ const ProductSection = () => {
   const [avatars, setAvatars] = useState({});
   const [selectedQuantities, setSelectedQuantities] = useState({});
   const [alertOpen, setAlertOpen] = useState(false);
+  const [alertOpenError, setAlertOpenError] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -146,10 +147,11 @@ const ProductSection = () => {
                 if (error.response && error.response.status === 400) {
                     console.log('Данный продукт был уже добавлен в корзину');
                     // выводим сообщение об ошибке на фронтенд, например, через уведомление
-                    setAlertOpen(true);
+                    setAlertOpenError(true);
                 } else {
                     console.error('Error adding item to basket:', error);
                     // обработка других ошибок при добавлении в корзину
+                    setAlertOpenError(true);
                 }
             });
     }
@@ -160,6 +162,13 @@ const ProductSection = () => {
       return;
     }
     setAlertOpen(false);
+  };
+
+  const handleCloseAlertError = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setAlertOpenError(false);
   };
 
   const handleDecreaseQuantity = (productId) => {
@@ -237,6 +246,19 @@ const ProductSection = () => {
           Продукт успешно добавлен в корзину!
         </Alert>
       </Snackbar>
+      <Snackbar
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      open={alertOpenError}
+      autoHideDuration={4000}
+      onClose={handleCloseAlertError}
+    >
+      <Alert onClose={handleCloseAlertError} severity="error" sx={{ width: '100%' }}>
+        Данный продукт уже был добавлен в корзину!
+      </Alert>
+    </Snackbar>
     </div>
   );
 };
