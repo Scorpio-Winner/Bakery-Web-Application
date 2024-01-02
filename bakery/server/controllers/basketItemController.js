@@ -31,6 +31,22 @@ class BasketItemController {
             return res.sendStatus(500);
         }
     }
+
+    async getProductToOrderForm(req, res) {
+        const  basketId  = req.params.id;
+        try {
+            const orderProducts = await BasketItem.findAll({ where: { basketId : basketId } });
+
+            if (!orderProducts || orderProducts.length === 0) {
+            return res.status(404).json({ message: 'Продукты не найдены для данной корзины' });
+            }
+
+            return res.status(200).json( orderProducts );
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: 'Ошибка сервера при поиске продуктов для данной корзины' });
+        }
+    }
 }
 
   

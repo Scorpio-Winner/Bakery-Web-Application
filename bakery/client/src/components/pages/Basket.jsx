@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography, Paper, TextField, Button } from '@material-ui/core';
 import logo from '../header/logo.png';
 import Header from '../header/Header';
+import { getProfile } from "../api/userApi";
+import { getBasketItems } from "../api/basketApi";
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,20 +39,109 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
     width: '100%',
   },
-  button: {
-    width: '100%',
-    marginTop: theme.spacing(2),
-    backgroundColor:'#FED84C',
-  },
 }));
 
 const currentDate = new Date().toLocaleDateString();
 
 const Basket = () => {
   const classes = useStyles();
+  const [userData, setUserData] = useState({});
+  const [basketItems, setBasketItems] = useState([]);
+  const [products, setProducts] = useState([]);
+
+
+  useEffect(() => {
+    const loadBasketItems = async (basketId) => {
+      try {
+        const basketItemsResponse = await getBasketItems(basketId);
+  
+        if (basketItemsResponse.status === 200) {
+          setBasketItems(basketItemsResponse.data);
+        }
+      } catch (error) {
+        console.error('Error loading basket items:', error);
+        // Обработка ошибки при загрузке товаров из корзины
+      }
+  
+      // Получаем продукты
+      try {
+        const productsResponse = await axios.get('/products');
+  
+        if (!productsResponse) {
+          console.log("Ошибка при загрузке продуктов");
+          return;
+        }
+  
+        setProducts(productsResponse.data);
+      } catch (error) {
+        console.error('Error loading products:', error);
+        // Обработка ошибки при загрузке продуктов
+      }
+    };
+  
+    const loadData = async () => {
+      try {
+        const response = await getProfile();
+  
+        if (!response) {
+          console.log("Сервис временно недоступен");
+          return;
+        }
+  
+        if (response.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("role");
+          sessionStorage.removeItem("token");
+          sessionStorage.removeItem("role");
+          window.location.reload();
+        }
+  
+        if (response.status >= 300) {
+          console.log("Ошибка при загрузке профиля. Код: " + response.status);
+          console.log(response);
+          return;
+        }
+  
+        setUserData(response.data);
+        loadBasketItems(response.data.basketId); 
+      } catch (error) {
+        console.error("Error loading user data:", error);
+      }
+    };
+  
+    loadData();
+  }, []);
+  
+
+
+const getTotalPrice = () => {
+  let totalPrice = 0;
+
+  basketItems.forEach((item) => {
+    const product = products.find((prod) => prod.id === item.productId);
+    if (product) {
+      totalPrice += product.price * item.quantity;
+    }
+  });
+
+  return totalPrice;
+};
+
+
+const buildProductString = () => {
+  const productStrings = basketItems.map((item) => {
+    const product = products.find((prod) => prod.id === item.productId);
+    if (product) {
+      return `${item.quantity} x ${product.name}`;
+    }
+    return "";
+  });
+
+  return productStrings.filter((str) => str !== "").join(", ");
+};
 
   return (
-    <div className={classes.root}>
+    <div >
       <Header />
 
       {/* Form */}
@@ -64,7 +156,7 @@ const Basket = () => {
           Детали заказа
         </Typography>
 
-        <Typography variant="subtitle1">Корзина:</Typography>
+        <Typography variant="subtitle1">Корзина: {buildProductString()}</Typography>
 
         <TextField
           className={classes.input}
@@ -82,11 +174,24 @@ const Basket = () => {
           variant="outlined"
         />
 
-        <Typography variant="subtitle1">Стоимость:</Typography>
+        <Typography variant="subtitle1">Стоимость: {getTotalPrice()} руб</Typography>
 
-        <Button variant="contained" color="primary" className={classes.button}>
-          Оформить
-        </Button>
+        <Button
+        variant="contained"
+        color="primary"
+        style={{
+          width: '100%',
+          marginTop: '1vh',
+          backgroundColor: '#FED84C',
+          color: 'black',
+          transition: 'background-color 0.3s',
+          '&:hover': {
+            backgroundColor: '#FFA88B',
+          },
+        }}
+      >
+        Оформить
+      </Button>
       </Paper>
     </div>
   );

@@ -2,30 +2,25 @@ const { Order, Basket, Product } = require('../models/models');
 
 class OrderController {
   async createOrder(req, res) {
-    const { userId, basketId } = req.body;
-    
+    const { userId, name, delivery_address, total_cost, description } = req.body;
+  
     try {
-      const basket = await Basket.findByPk(basketId, { include: Product });
-
-      if (!basket) {
-        return res.status(404).json({ error: 'Корзина не найдена' });
-      }
-
-      const order = await Order.create({ UserId: userId, status: 'Сформирован' });
-
-      // Копируем товары из корзины в заказ
-      await Promise.all(
-        basket.Products.map(async (product) => {
-          await order.addProduct(product, { through: { quantity: product.BasketItem.quantity } });
-        })
-      );
-
+      const order = await Order.create({ 
+        UserId: userId, 
+        name,
+        delivery_address,
+        total_cost,
+        status: 'Сформирован',
+        description
+      });
+  
       return res.status(201).json({ order });
     } catch (err) {
       console.error(err);
       return res.status(500).json({ error: 'Ошибка сервера' });
     }
   }
+  
 
   async getOrder(req, res) {
     const { orderId } = req.params;

@@ -39,8 +39,10 @@ const Order = sequelize.define('order', {
   total_cost: { type: DataTypes.INTEGER, allowNull: false },
   status: { type: DataTypes.STRING, allowNull: false },
   completion_time: { type: DataTypes.STRING, allowNull: true },
+  name: { type: DataTypes.STRING, allowNull: false }, 
+  description: { type: DataTypes.STRING, allowNull: true }, 
 },
-{timestamps: false});
+{ timestamps: false });
 
 const Admin = sequelize.define('admin', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
