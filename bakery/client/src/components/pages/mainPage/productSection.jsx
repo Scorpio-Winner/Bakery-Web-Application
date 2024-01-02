@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Card, CardContent, CardActions, Button, Typography } from '@material-ui/core';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import { getProfile } from "../../api/userApi";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,16 +59,49 @@ const useStyles = makeStyles((theme) => ({
 const ProductPage = () => {
   const classes = useStyles();
   const [products, setProducts] = useState([]);
+  const [userData, setUserData] = useState({});
   const [avatars, setAvatars] = useState({});
   const [selectedQuantities, setSelectedQuantities] = useState({});
 
   useEffect(() => {
-    // Получаем продукты
-    axios.get('/products')
-      .then(response => {
-        setProducts(response.data);
+    const loadData = async () => {
+      try {
+        const userDataResponse = await getProfile();
+  
+        if (!userDataResponse) {
+          console.log("Сервис временно недоступен");
+          return;
+        }
+  
+        if (userDataResponse.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("role");
+          sessionStorage.removeItem("token");
+          sessionStorage.removeItem("role");
+          window.location.reload();
+          return;
+        }
+  
+        if (userDataResponse.status >= 300) {
+          console.log("Ошибка при загрузке профиля. Код: " + userDataResponse.status);
+          console.log(userDataResponse);
+          return;
+        }
+  
+        setUserData(userDataResponse.data);
+  
+        // Получаем продукты
+        const productsResponse = await axios.get('/products');
+  
+        if (!productsResponse) {
+          console.log("Ошибка при загрузке продуктов");
+          return;
+        }
+  
+        setProducts(productsResponse.data);
+  
         // После получения продуктов, запрашиваем фотографии для каждого продукта
-        response.data.forEach(product => {
+        productsResponse.data.forEach(product => {
           axios.get(`/products/avatar/${product.id}`, { responseType: 'blob' })
             .then(res => {
               const avatarUrl = URL.createObjectURL(res.data);
@@ -79,19 +113,35 @@ const ProductPage = () => {
               setAvatars(prevState => ({ ...prevState, [product.id]: 'здесь__заглушка_для_фото' }));
             });
         });
-      })
-      .catch(error => {
-        console.error('Error fetching products:', error);
-      });
+      } catch (error) {
+        console.error('Error loading data:', error);
+      }
+    };
+  
+    loadData();
   }, []);
 
   const handleOrderClick = (productId) => {
     const quantity = selectedQuantities[productId] || 0;
     setSelectedQuantities(selectedQuantities);
 
-    if (quantity + 1 > 0) {
-      // Perform the desired action (e.g., send the order)
-      console.log('Sending order for product ID:', productId);
+    if (quantity > 0) {
+      const basketItem = {
+        basketId: userData.basketId, // используем basketId из userData
+        productId: productId,
+        quantity: quantity,
+      };
+
+      // Отправляем basketItem на сервер или куда нужно
+    axios.post('/api/product-to-basket', basketItem)
+    .then(response => {
+      console.log('Item added to basket:', response.data);
+      // здесь можно обновить состояние или выполнить другие действия
+    })
+    .catch(error => {
+      console.error('Error adding item to basket:', error);
+      // обработка ошибок при добавлении в корзину
+    });
     }
   };
 
@@ -109,29 +159,7 @@ const ProductPage = () => {
     setSelectedQuantities(updatedQuantities);
   };
 
-  const fetchAvatars = (products) => {
-    const avatarRequests = products.map((product) =>
-      axios.get(`/api/products/avatar/${product.id}`, { responseType: 'blob' })
-    );
-
-    axios
-      .all(avatarRequests)
-      .then(
-        axios.spread((...responses) => {
-          const updatedAvatars = {};
-          responses.forEach((response, index) => {
-            const productId = products[index].id;
-            const avatarUrl = URL.createObjectURL(response.data);
-            updatedAvatars[productId] = avatarUrl;
-          });
-          setAvatars(updatedAvatars);
-        })
-      )
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
+ 
   return (
     <div className={classes.root}>
       <Typography variant="h4" align="center" style={{ marginBottom: '5vh' }}>

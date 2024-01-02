@@ -11,8 +11,10 @@ import { useNavigate } from "react-router-dom";
 const Header = () => {
   const navigate = useNavigate();
   const handleLogoutClick = () => {
-    localStorage.removeItem("jwt");
+    localStorage.removeItem("token");
     localStorage.removeItem("role");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("role");
     window.location.reload();
   };
   
@@ -33,10 +35,6 @@ const Header = () => {
     };
   }, []);
 
-
-  const handleLogoClick = () => {
-    navigate("/main");
-  };
 
   return (
     <AppBar position="static" style={{ backgroundColor: "#F8F8F8" }}>
