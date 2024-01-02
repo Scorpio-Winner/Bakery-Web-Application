@@ -2,16 +2,17 @@ const { Order, Basket, Product } = require('../models/models');
 
 class OrderController {
   async createOrder(req, res) {
-    const { userId, name, delivery_address, total_cost, description } = req.body;
+    const { userId, name, delivery_address, total_cost, description, date_of_ordering } = req.body;
   
     try {
       const order = await Order.create({ 
-        UserId: userId, 
+        userId: userId, 
         name,
         delivery_address,
         total_cost,
         status: 'Сформирован',
-        description
+        description,
+        date_of_ordering
       });
   
       return res.status(201).json({ order });

@@ -47,6 +47,27 @@ class BasketItemController {
             return res.status(500).json({ error: 'Ошибка сервера при поиске продуктов для данной корзины' });
         }
     }
+
+    async deleteItemsByBasketId(req, res) {
+        const { basketId } = req.params;
+    
+        try {
+          const deletedItems = await BasketItem.destroy({
+            where: {
+              basketId: basketId,
+            },
+          });
+    
+          if (deletedItems === 0) {
+            return res.status(404).json({ message: 'Нет записей для удаления' });
+          }
+    
+          return res.status(200).json({ message: `Успешно удалено ${deletedItems} записей` });
+        } catch (error) {
+          console.error(error);
+          return res.status(500).json({ error: 'Ошибка сервера при удалении записей' });
+        }
+    }
 }
 
   

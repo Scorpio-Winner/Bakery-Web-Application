@@ -41,6 +41,7 @@ const Order = sequelize.define('order', {
   completion_time: { type: DataTypes.STRING, allowNull: true },
   name: { type: DataTypes.STRING, allowNull: false }, 
   description: { type: DataTypes.STRING, allowNull: true }, 
+  date_of_ordering: { type: DataTypes.DATE, allowNull: false },
 },
 { timestamps: false });
 

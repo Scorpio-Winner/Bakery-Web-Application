@@ -11,6 +11,7 @@ router.put("/user/update/:id", userController.update);
 
 router.post("/product-to-basket", basketItemController.setProductToBasket);
 router.get("/basket-to-order/:id", basketItemController.getProductToOrderForm);
+router.delete("/delete-items/:basketId", basketItemController.deleteItemsByBasketId);
 
 
 

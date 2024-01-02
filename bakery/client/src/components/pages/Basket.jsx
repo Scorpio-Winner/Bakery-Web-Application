@@ -37,7 +37,18 @@ const useStyles = makeStyles((theme) => ({
   },
   input: {
     marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(2),
     width: '100%',
+  },
+  button: {
+    width: '100%',
+    marginTop: theme.spacing(2),
+    backgroundColor: '#FED84C',
+    color: 'black',
+    transition: 'background-color 0.3s', // Добавлено свойство transition для плавного перехода
+    '&:hover': {
+      backgroundColor: '#FFA88B', // Изменение цвета при наведении
+    },
   },
 }));
 
@@ -48,6 +59,8 @@ const Basket = () => {
   const [userData, setUserData] = useState({});
   const [basketItems, setBasketItems] = useState([]);
   const [products, setProducts] = useState([]);
+  const [deliveryAddress, setDeliveryAddress] = useState('');
+  const [additionalNotes, setAdditionalNotes] = useState('');
 
 
   useEffect(() => {
@@ -140,6 +153,65 @@ const buildProductString = () => {
   return productStrings.filter((str) => str !== "").join(", ");
 };
 
+const handleOrderSubmit = async () => {
+  try {
+    // Подготовка данных для создания заказа
+    const orderData = {
+      userId: userData.id,
+      name: buildProductString(),
+      total_cost: getTotalPrice(),
+      delivery_address: deliveryAddress,
+      description: additionalNotes,
+      date_of_ordering: currentDate,
+    };
+
+    // Вызов функции для создания заказа
+    const response = await axios.post('/api/create-order', orderData);
+
+    if (response.status === 201) {
+      // Успешное создание заказа
+      console.log('Заказ успешно создан!');
+
+      // Вызываем удаление элементов корзины
+      const deleteResponse = await axios.delete(`/api/delete-items/${userData.basketId}`);
+      
+      if (deleteResponse.status === 200) {
+        // Успешное удаление элементов корзины
+        console.log('Элементы корзины успешно удалены после оформления заказа');
+      } else {
+        // Обработка ошибки при удалении элементов корзины
+        console.error('Ошибка при удалении элементов корзины:', deleteResponse.statusText);
+      }
+    }
+  } catch (error) {
+    console.error('Ошибка при создании заказа:', error);
+    // Обработка ошибок при создании заказа
+  }
+
+  window.location.reload();
+};
+
+const handleClearBasket = async () => {
+  try {
+      const deleteResponse = await axios.delete(`/api/delete-items/${userData.basketId}`);
+      
+      if (deleteResponse.status === 200) {
+        // Успешное удаление элементов корзины
+        console.log('Элементы корзины успешно удалены после оформления заказа');
+      } else {
+        // Обработка ошибки при удалении элементов корзины
+        console.error('Ошибка при удалении элементов корзины:', deleteResponse.statusText);
+      }
+    }
+  catch (error) {
+    console.error('Ошибка при создании заказа:', error);
+    // Обработка ошибок при создании заказа
+  }
+
+  window.location.reload();
+};
+
+
   return (
     <div >
       <Header />
@@ -162,6 +234,8 @@ const buildProductString = () => {
           className={classes.input}
           label="Какие-то пожелания?"
           variant="outlined"
+          value={additionalNotes}
+          onChange={(e) => setAdditionalNotes(e.target.value)}
         />
 
         <Typography variant="subtitle1">
@@ -172,6 +246,8 @@ const buildProductString = () => {
           className={classes.input}
           label="Адрес доставки"
           variant="outlined"
+          value={deliveryAddress}
+          onChange={(e) => setDeliveryAddress(e.target.value)}
         />
 
         <Typography variant="subtitle1">Стоимость: {getTotalPrice()} руб</Typography>
@@ -179,18 +255,20 @@ const buildProductString = () => {
         <Button
         variant="contained"
         color="primary"
-        style={{
-          width: '100%',
-          marginTop: '1vh',
-          backgroundColor: '#FED84C',
-          color: 'black',
-          transition: 'background-color 0.3s',
-          '&:hover': {
-            backgroundColor: '#FFA88B',
-          },
-        }}
+        className={classes.button}
+        disabled={!deliveryAddress || getTotalPrice()==0}
+        onClick={handleOrderSubmit}
       >
         Оформить
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        className={classes.button}
+        disabled={getTotalPrice()==0}
+        onClick={handleClearBasket}
+      >
+        Очистить корзину
       </Button>
       </Paper>
     </div>
