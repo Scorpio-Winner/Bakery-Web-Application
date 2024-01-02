@@ -85,7 +85,9 @@ const OrdersHeader = () => {
           </IconButton>
 
           {/* Корзина */}
-          <IconButton color="inherit">
+          <IconButton color="inherit" onClick={() => {
+            navigate("/basket");
+          }}>
             <Box
               sx={{
                 display: "flex",
@@ -102,7 +104,9 @@ const OrdersHeader = () => {
           </IconButton>
 
           {/* Профиль */}
-          <IconButton color="inherit">
+          <IconButton color="inherit" onClick={() => {
+            navigate("/profile");
+          }}>
             <Box
               sx={{
                 display: "flex",

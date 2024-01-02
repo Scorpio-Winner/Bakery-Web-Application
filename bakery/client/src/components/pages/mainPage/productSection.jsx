@@ -5,6 +5,8 @@ import { Card, CardContent, CardActions, Button, Typography } from '@material-ui
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { getProfile } from "../../api/userApi";
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,12 +58,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProductPage = () => {
+const ProductSection = () => {
   const classes = useStyles();
   const [products, setProducts] = useState([]);
   const [userData, setUserData] = useState({});
   const [avatars, setAvatars] = useState({});
   const [selectedQuantities, setSelectedQuantities] = useState({});
+  const [alertOpen, setAlertOpen] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -123,26 +126,40 @@ const ProductPage = () => {
 
   const handleOrderClick = (productId) => {
     const quantity = selectedQuantities[productId] || 0;
-    setSelectedQuantities(selectedQuantities);
 
     if (quantity > 0) {
-      const basketItem = {
-        basketId: userData.basketId, // используем basketId из userData
-        productId: productId,
-        quantity: quantity,
-      };
+        const basketItem = {
+            basketId: userData.basketId,
+            productId: productId,
+            quantity: quantity,
+        };
 
-      // Отправляем basketItem на сервер или куда нужно
-    axios.post('/api/product-to-basket', basketItem)
-    .then(response => {
-      console.log('Item added to basket:', response.data);
-      // здесь можно обновить состояние или выполнить другие действия
-    })
-    .catch(error => {
-      console.error('Error adding item to basket:', error);
-      // обработка ошибок при добавлении в корзину
-    });
+        // Отправляем basketItem на сервер
+        axios.post('/api/product-to-basket', basketItem)
+            .then(response => {
+                console.log('Item added to basket:', response.data);
+                setSelectedQuantities({ ...selectedQuantities, [productId]: 0 });
+                setAlertOpen(true);
+                // здесь можно обновить состояние или выполнить другие действия
+            })
+            .catch(error => {
+                if (error.response && error.response.status === 400) {
+                    console.log('Данный продукт был уже добавлен в корзину');
+                    // выводим сообщение об ошибке на фронтенд, например, через уведомление
+                    setAlertOpen(true);
+                } else {
+                    console.error('Error adding item to basket:', error);
+                    // обработка других ошибок при добавлении в корзину
+                }
+            });
     }
+  };
+
+  const handleCloseAlert = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setAlertOpen(false);
   };
 
   const handleDecreaseQuantity = (productId) => {
@@ -159,7 +176,7 @@ const ProductPage = () => {
     setSelectedQuantities(updatedQuantities);
   };
 
- 
+
   return (
     <div className={classes.root}>
       <Typography variant="h4" align="center" style={{ marginBottom: '5vh' }}>
@@ -168,7 +185,7 @@ const ProductPage = () => {
       <div className={classes.container}>
         {products.map((product) => (
           <Card key={product.id} className={classes.card}>
-              <img src={avatars[product.id]} alt={product.name} />
+            <img src={avatars[product.id]} alt={product.name} />
             <CardContent>
               <Typography variant="h6" component="h2" gutterBottom>
                 {product.name}
@@ -207,8 +224,21 @@ const ProductPage = () => {
           </Card>
         ))}
       </div>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={alertOpen}
+        autoHideDuration={5000}
+        onClose={handleCloseAlert}
+      >
+        <Alert onClose={handleCloseAlert} severity="success" sx={{ width: '100%' }}>
+          Продукт успешно добавлен в корзину!
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
 
-export default ProductPage;
+export default ProductSection;

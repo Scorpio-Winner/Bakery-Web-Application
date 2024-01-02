@@ -39,12 +39,13 @@ const useStyles = makeStyles((theme) => ({
   button: {
     width: '100%',
     marginTop: theme.spacing(2),
+    backgroundColor:'#FED84C',
   },
 }));
 
 const currentDate = new Date().toLocaleDateString();
 
-const Backet = () => {
+const Basket = () => {
   const classes = useStyles();
 
   return (
@@ -91,4 +92,4 @@ const Backet = () => {
   );
 };
 
-export default Backet;
+export default Basket;

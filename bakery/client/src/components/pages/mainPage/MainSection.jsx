@@ -82,6 +82,10 @@ const MainSection = () => {
   const handleProfileClick = () => {
     navigate("/profile");
   };
+  
+  const handleBasketClick = () => {
+    navigate("/basket");
+  };
 
   return (
     <div className={classes.root}>
@@ -121,7 +125,7 @@ const MainSection = () => {
           </IconButton>
 
           {/* Корзина */}
-          <IconButton color="inherit">
+          <IconButton color="inherit" onClick={handleBasketClick}>
             <Box
               sx={{
                 display: "flex",
