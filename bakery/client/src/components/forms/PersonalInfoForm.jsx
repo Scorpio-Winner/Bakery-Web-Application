@@ -92,14 +92,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PersonalInfoForm = (userData, setUserData) => {
+const PersonalInfoForm = ({userData, setUserData}) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
   const [birthdate, setBirthdate] = useState('');
-  const [photo, setPhoto] = useState(null);
+
+
+  
 
   const handleRegister = (e) => {
     e.preventDefault();
@@ -146,7 +148,7 @@ const PersonalInfoForm = (userData, setUserData) => {
 
   return (
     <div className={classes.formContainer}>
-      <form className={classes.form} onSubmit={handleRegister}>
+      <form className={classes.form}>
         <Typography variant="h4" component="h2" style={{ marginBottom: '2rem' }}>
           Укажите личные данные
         </Typography>
@@ -186,7 +188,7 @@ const PersonalInfoForm = (userData, setUserData) => {
         <Button
           className={classes.button}
           variant="contained"
-          type="submit"
+          onClick={handleRegister}
         >
           Готово
         </Button>

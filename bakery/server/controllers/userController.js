@@ -2,6 +2,8 @@ const { User, Basket } = require("../models/models");
 const bcrypt = require("bcrypt");
 const fs = require("fs");
 const path = require("path");
+const { Sequelize, Op, Model, DataTypes, where } = require('sequelize');
+
 
 class UserController {
   async getAll(req, res) {
@@ -101,35 +103,29 @@ class UserController {
 
 
   async create(req, res) {
-    const t = await sequelize.transaction(); // Начать транзакцию
-
     try {
-        const user = { ...req.body };
-
-        if ((await User.findOne({ where: { email: user.email } })) !== null) {
-            return res.status(400).json({ error: "Email is taken" });
-        }
-
-        user.password = await bcrypt.hash(user.password, 10);
-
-        // Создание корзины для пользователя
-        const basket = await Basket.create({}, { transaction: t });
-
-        // Привязка basketId к пользователю
-        user.basketId = basket.id;
-
-        // Создание пользователя
-        const createdUser = await User.create(user, { transaction: t });
-
-        await t.commit(); // Завершить транзакцию
-
-        return res.status(201).json(createdUser);
+      const user = { ...req.body };
+  
+      if (await User.findOne({ where: { email: user.email } })) {
+        return res.status(400).json({ error: "Email is taken" });
+      }
+  
+      user.password = await bcrypt.hash(user.password, 10);
+  
+      const createdUser = await User.create(user);
+  
+      const basket = await Basket.create({ userId: createdUser.id });
+  
+      // Обновление пользователя с информацией о корзине
+      await createdUser.update({ basketId: basket.id });
+  
+      return res.status(201).json(createdUser);
     } catch (err) {
-        await t.rollback(); // Откатить транзакцию в случае ошибки
-
-        return res.sendStatus(500);
+      console.error(err);
+      return res.sendStatus(500);
     }
-}
+  }
+  
 
 }
 

@@ -46,7 +46,7 @@ class AuthController {
                 }
 
                 const token = jwt.sign({ adminId: admin.id }, process.env.SECRET_KEY, {
-                    expiresIn: "1h",
+                    expiresIn: "5h",
                 });
 
                 res.status(200).json({ token: token, role: "admin" });
