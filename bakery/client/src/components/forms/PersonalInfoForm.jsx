@@ -92,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PersonalInfoForm = () => {
+const PersonalInfoForm = (userData, setUserData) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const [firstName, setFirstName] = useState('');
@@ -115,13 +115,14 @@ const PersonalInfoForm = () => {
       console.error(errorMessage);
     };
 
-    const userData = {
-      firstName,
-      lastName,
-      phone,
-      birthdate,
-      photo,
-    };
+    setUserData(prevUserData => ({
+      ...prevUserData,
+      name: firstName,
+      surname: lastName,
+      phone: phone,
+      birth_date: birthdate,
+    }));
+    
 
     registerUser(userData)
       .then((response) => {
@@ -143,45 +144,12 @@ const PersonalInfoForm = () => {
       });
   };
 
-
-  const handlePhotoUpload = (e) => {
-    const file = e.target.files[0];
-    setPhoto(file);
-  };
-
   return (
     <div className={classes.formContainer}>
       <form className={classes.form} onSubmit={handleRegister}>
         <Typography variant="h4" component="h2" style={{ marginBottom: '2rem' }}>
           Укажите личные данные
         </Typography>
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
-          <div className={classes.photoContainer}>
-            {photo ? (
-              <img src={URL.createObjectURL(photo)} alt="User" className={classes.photo} />
-            ) : (
-              <div className={classes.uploadIcon} />
-            )}
-          </div>
-          <label htmlFor="photo-upload">
-            <Button
-              className={classes.uploadButton}
-              variant="contained"
-              component="span"
-              style={{ fontSize: '0.75rem', borderColor:'black',}}
-              
-            >
-              Загрузить изображение
-            </Button>
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handlePhotoUpload}
-            style={{ display: 'none' }}
-            id="photo-upload"
-          />
-        </div>
         <TextField
           className={classes.input}
           label="First Name"

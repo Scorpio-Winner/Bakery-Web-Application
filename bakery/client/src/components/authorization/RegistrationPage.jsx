@@ -7,10 +7,10 @@ const RegistrationPage = () => {
   const [userData, setUserData] = useState({
     email: '',
     password: '',
-    firstName: '',
-    lastName: '',
+    name: '',
+    surname: '',
     phone: '',
-    birthdate: '',
+    birth_date: '',
   });
 
   const handleNext = () => {
@@ -18,10 +18,6 @@ const RegistrationPage = () => {
   };
 
   const handleRegister = () => {
-    // Perform registration logic here using userData object
-    // You can make an API call to your backend to create a new user
-
-    // After successful registration, you can redirect to a different page or show a success message
     alert('User registered successfully!');
   };
 

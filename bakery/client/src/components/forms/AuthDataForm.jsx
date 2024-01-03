@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AuthDataForm = ({ onNext, userData }) => {
+const AuthDataForm = ({ onNext, setUserData }) => {
   const classes = useStyles();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -78,6 +78,13 @@ const AuthDataForm = ({ onNext, userData }) => {
       setPasswordError("Пароли не совпадают");
       return;
     }
+
+    setUserData(prevUserData => ({
+      ...prevUserData,
+      email: email,
+      password: password,
+    }));
+    
 
     // Handle successful validation
     onNext();
