@@ -9,6 +9,9 @@ const reviewController = require("../controllers/reviewController");
 const router = new Router();
 
 router.get("/user", userController.getProfile);
+router.get("/admin", adminController.getProfile);
+
+router.get("/all-users", userController.getAll);
 router.put("/user/update/:id", userController.update);
 
 router.post("/product-to-basket", basketItemController.setProductToBasket);
@@ -26,7 +29,12 @@ router.get("/in-process-orders/:id", orderController.getInProcessOrders);
 router.get("/review/:id", reviewController.getReviewByOrderID);
 router.post("/create-review", reviewController.createReview);
 router.put("/order/update/:id", orderController.updateOrderStatusCancelled);
+router.put("/order/update/complete/:id", orderController.updateOrderStatusCompleted);
+router.put("/order/update/in-progress/:id", orderController.updateOrderStatusInProgress);
 
+
+router.get("/completed-orders", orderController.getAllCompletedOrders);
+router.get("/in-process-orders", orderController.getAllInProcessOrders);
 
 
 

@@ -1,33 +1,23 @@
-import MainPage from "../components/pages/MainPage";
-import ProfilePage from "../components/pages/ProfilePage";
-import Basket from "../components/pages/Basket";
-import OrdersPage from "../components/pages/OrdersPage";
-import CompletedOrdersPage from "../components/pages/CompletedOrdersPage";
-import CurrentOrdersPage from "../components/pages/CurrentOrdersPage";
+import AdminMainPage from "../components/pages/AdminPanel/AdminMainPage";
+import AdminOrdersPage from "../components/pages/AdminPanel/AdminOrdersPage";
+import AdminCompletedOrdersPage from "../components/pages/AdminPanel/AdminCompletedOrdersPage";
+import AdminCurrentOrdersPage from "../components/pages/AdminPanel/AdminCurrentOrdersPage";
 
-export const userRoutes = [
+export const adminRoutes = [
     {
-        path: "/main",
-        Component: MainPage,
+        path: "/admin-main",
+        Component: AdminMainPage,
     },
     {
-        path: "/profile",
-        Component: ProfilePage,
+        path: "/admin-orders",
+        Component: AdminOrdersPage,
     },
     {
-        path: "/basket",
-        Component: Basket,
+        path: "/admin-completed-orders",
+        Component: AdminCompletedOrdersPage,
     },
     {
-        path: "/orders",
-        Component: OrdersPage,
-    },
-    {
-        path: "/completed-orders",
-        Component: CompletedOrdersPage,
-    },
-    {
-        path: "/current-orders",
-        Component: CurrentOrdersPage,
+        path: "/admin-current-orders",
+        Component: AdminCurrentOrdersPage,
     },
 ];

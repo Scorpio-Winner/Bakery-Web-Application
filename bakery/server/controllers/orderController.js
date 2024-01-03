@@ -24,6 +24,22 @@ class OrderController {
     }
   }
 
+  async getAllOrders(req, res) {
+    try {
+      const orders = await Order.findAll();
+  
+      if (!orders || orders.length === 0) {
+        return res.status(404).json({ message: 'Заказы не найдены' });
+      }
+  
+      return res.status(200).json(orders);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Ошибка сервера при поиске заказов' });
+    }
+  }
+  
+
 
   async getCompletedOrders(req, res) {
     const  userId  = req.params.id;
@@ -68,6 +84,46 @@ class OrderController {
       return res.status(500).json({ error: 'Ошибка сервера при поиске заказов' });
     }
   }
+
+  async getAllCompletedOrders(req, res) {
+    try {
+      const orders = await Order.findAll({
+        where: {
+          status: { [Op.or]: ['Выполнен', 'Отменен'] } // Используем оператор [Op.or] для поиска по разным статусам
+        }
+      });
+  
+      if (!orders || orders.length === 0) {
+        return res.status(404).json({ message: 'Заказы не найдены для данного пользователя и статуса' });
+      }
+  
+      return res.status(200).json(orders);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Ошибка сервера при поиске заказов' });
+    }
+  }
+
+  async getAllInProcessOrders(req, res) {
+  
+    try {
+      const orders = await Order.findAll({
+        where: {
+          status: { [Op.or]: ['В процессе', 'Сформирован'] } // Используем оператор [Op.or] для поиска по разным статусам
+        }
+      });
+  
+      if (!orders || orders.length === 0) {
+        return res.status(404).json({ message: 'Заказы не найдены для данного пользователя и статуса' });
+      }
+  
+      return res.status(200).json(orders);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Ошибка сервера при поиске заказов' });
+    }
+  }
+  
   
   
 
@@ -100,16 +156,19 @@ class OrderController {
   }
 
   async updateOrderStatusInProgress(req, res) {
-    const { orderId } = req.params;
+    const orderId  = req.params.id;
+    const { completion_time, adminId } = req.body;
 
     try {
-      const order = await Order.findByPk(orderId);
+      const order = await Order.findOne({ where: { id: orderId } });
 
       if (!order) {
         return res.status(404).json({ error: 'Заказ не найден' });
       }
 
       order.status = 'В процессе';
+      order.completion_time = completion_time;
+      order.adminId = adminId;
       await order.save();
 
       return res.status(200).json({ message: 'Статус заказа обновлен' });
@@ -178,28 +237,51 @@ class OrderController {
       return res.status(500).json({ error: 'Ошибка сервера' });
     }
   }
-  
-  
+
 
   async updateOrderStatusCompleted(req, res) {
-    const { orderId } = req.params;
-
+    const { id } = req.params;
+  
     try {
-      const order = await Order.findByPk(orderId);
-
+      const orderId = parseInt(id);
+  
+      let order = await Order.findOne({ where: { id: orderId } });
+  
       if (!order) {
         return res.status(404).json({ error: 'Заказ не найден' });
       }
-
+  
       order.status = 'Выполнен';
       await order.save();
-
+  
       return res.status(200).json({ message: 'Статус заказа обновлен' });
     } catch (err) {
       console.error(err);
       return res.status(500).json({ error: 'Ошибка сервера' });
     }
   }
+  
+  
+
+  // async updateOrderStatusCompleted(req, res) {
+  //   const { orderId } = req.params;
+
+  //   try {
+  //     const order = await Order.findByPk(orderId);
+
+  //     if (!order) {
+  //       return res.status(404).json({ error: 'Заказ не найден' });
+  //     }
+
+  //     order.status = 'Выполнен';
+  //     await order.save();
+
+  //     return res.status(200).json({ message: 'Статус заказа обновлен' });
+  //   } catch (err) {
+  //     console.error(err);
+  //     return res.status(500).json({ error: 'Ошибка сервера' });
+  //   }
+  // }
 }
 
 module.exports = new OrderController();
