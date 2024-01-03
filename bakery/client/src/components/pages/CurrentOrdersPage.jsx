@@ -4,20 +4,20 @@ import OrdersHeader from '../header/OrdersHeader';
 import { getProfile } from "../api/userApi";
 import { getInProcessOrders } from "../api/orderApi";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-
+import OrderModal from './OrderModal';
 
 const CurrentOrdersPage = () => {
   const [userData, setUserData] = useState({});
   const [inProcessOrders, setInProcessOrders] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   useEffect(() => {
-
     const loadInProcessOrders = async (userId) => {
       try {
         const response = await getInProcessOrders(userId);
 
         if (response.status === 200) {
-          setInProcessOrders(response.data); // Обновляем состояние с данными о выполненных заказах
+          setInProcessOrders(response.data);
         } else {
           console.log('Ошибка при получении выполненных заказов:', response.statusText);
         }
@@ -59,30 +59,35 @@ const CurrentOrdersPage = () => {
     loadData();
   }, []);
 
+  const handleOpenModal = (order) => {
+    setSelectedOrder(order);
+  };
+  
+  const handleCloseModal = () => {
+    setSelectedOrder(null);
+  };
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center',marginBottom:'5vh' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '5vh' }}>
       <OrdersHeader />
       <Typography variant="h4" align="center" style={{ height: '5vh', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
 
       </Typography>
-
-      {/* Отображаем полученные данные о выполненных заказах */}
+      
       {inProcessOrders.map(order => (
         <Paper key={order.id} style={{ padding: '10px', margin: '10px', width: '40%', display: 'flex', alignItems: 'flex-start', position: 'relative', backgroundColor: '#E5F6FD', color: '#0288D1', flexDirection: 'column', gap: '5px' }}>
-          {/* Иконка галочки или крестика в зависимости от статуса */}
           {<ErrorOutlineIcon style={{ position: 'absolute', top: '5px', left: '5px', fontSize: '25px' }} />}
-          {/* Имя заказа */}
           <Typography variant="h5" style={{ marginBottom: '5px', marginLeft: '30px', color: '#014361', maxWidth: '70%'}}>{order.name}</Typography>
-          {/* Описание заказа */}
           <Typography style={{ marginLeft: '30px', color: '#014361', maxWidth: '70%' }}>{order.description}</Typography>
-          {/* Статус заказа */}
           <Typography style={{ marginLeft: '30px', color: '#022332', maxWidth: '70%' }}>{order.status}</Typography>
-          {/* Цена заказа */}
           <Typography style={{ position: 'absolute', top: '5px', right: '5px', color: '#014361', maxWidth: '70%' }}>{order.total_cost} руб.</Typography>
-          {/* Кнопка "Подробнее" */}
-          <Button variant="contained" style={{ position: 'absolute', bottom: '5px', right: '5px', color: 'white', backgroundColor: '#0288D1' }}>Подробнее</Button>
+          <Button variant="contained" style={{ position: 'absolute', bottom: '5px', right: '5px', color: 'white', backgroundColor: '#0288D1' }} onClick={() => handleOpenModal(order)}>Подробнее</Button>
         </Paper>
-    ))}
+      ))}
+      
+      {selectedOrder && (
+        <OrderModal order={selectedOrder} onClose={handleCloseModal} />
+      )}
     </div>
   );
 };

@@ -5,10 +5,12 @@ import { getProfile } from "../api/userApi";
 import { getCompletedOrders } from "../api/orderApi";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import OrderModal from './OrderModal';
 
 const CompletedOrdersPage = () => {
   const [userData, setUserData] = useState({});
   const [completedOrders, setCompletedOrders] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   useEffect(() => {
 
@@ -59,6 +61,14 @@ const CompletedOrdersPage = () => {
     loadData();
   }, []);
 
+  const handleOpenModal = (order) => {
+    setSelectedOrder(order);
+  };
+  
+  const handleCloseModal = () => {
+    setSelectedOrder(null);
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom:'5vh' }}>
       <OrdersHeader />
@@ -80,10 +90,13 @@ const CompletedOrdersPage = () => {
         {/* Цена заказа */}
         <Typography style={{ position: 'absolute', top: '5px', right: '5px', color: order.status === 'Выполнен' ? '#1E4620' : '#5F2120', maxWidth: '70%' }}>{order.total_cost} руб.</Typography>
         {/* Кнопка "Подробнее" */}
-        <Button variant="contained" style={{ position: 'absolute', bottom: '5px', right: '5px', color: 'white', backgroundColor: order.status === 'Выполнен' ? '#70C05B' : '#FF6347' }}>Подробнее</Button>
+        <Button variant="contained" style={{ position: 'absolute', bottom: '5px', right: '5px', color: 'white', backgroundColor: order.status === 'Выполнен' ? '#70C05B' : '#FF6347' }} onClick={() => handleOpenModal(order)}>Подробнее</Button>
       </Paper>
     ))}
 
+{selectedOrder && (
+        <OrderModal order={selectedOrder} onClose={handleCloseModal} />
+  )}
     </div>
   );
 };

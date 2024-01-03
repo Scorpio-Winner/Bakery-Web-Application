@@ -49,4 +49,21 @@ const getInProcessOrders = async (userId) => {
     }
 };
 
-export { getBasketItems, getCompletedOrders, getInProcessOrders };
+
+const updateOrderStatusCancelled = async (id) => {
+    try {
+        const response = await host.put(`/api/order/update/${id}`);
+
+        return response;
+    } catch (error) {
+        if (error.response) {
+            return error.response;
+        } else if (error.request) {
+            console.log("Server did not respond.");
+        } else {
+            console.log("Error while creating request");
+        }
+    }
+};
+
+export { getBasketItems, getCompletedOrders, getInProcessOrders, updateOrderStatusCancelled };

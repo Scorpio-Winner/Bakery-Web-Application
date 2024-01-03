@@ -2,24 +2,15 @@ const { Review, Order, User } = require('../models/models');
 
 class ReviewController {
   async createReview(req, res) {
-    const { rating, shortReview, description, orderId } = req.body;
+    const { rating, short_review, description, orderId } = req.body;
 
     try {
-      const order = await Order.findByPk(orderId);
-
-      if (!order) {
-        return res.status(404).json({ error: 'Заказ не найден' });
-      }
-
-      if (order.status !== 'Выполнен') {
-        return res.status(400).json({ error: 'Отзыв можно оставить только для выполненных заказов' });
-      }
 
       const review = await Review.create({
         rating,
-        shortReview,
+        short_review,
         description,
-        OrderId: orderId
+        orderId: orderId
       });
 
       return res.status(201).json({ review });
@@ -30,7 +21,6 @@ class ReviewController {
   }
 
   async getAllReviews(req, res) {
-    console.log('123');
     try {
       const reviews = await Review.findAll({
         include: [{ model: Order, include: [{ model: User }] }],
@@ -41,6 +31,24 @@ class ReviewController {
       return res.status(500).json({ error: 'Ошибка сервера' });
     }
   }
+
+  async getReviewByOrderID(req, res) {
+    const { id } = req.params; // изменение здесь
+  
+    try {
+      const review = await Review.findOne({ where: { orderId : id } });
+
+      if (!review || review.length === 0) {
+      return res.status(404).json({ message: 'Продукты не найдены для данной корзины' });
+      }
+
+      return res.status(200).json( review );
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Ошибка сервера при поиске продуктов для данной корзины' });
+  }
+}
+  
 }
 
 module.exports = new ReviewController();

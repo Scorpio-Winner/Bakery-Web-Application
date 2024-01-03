@@ -119,25 +119,67 @@ class OrderController {
     }
   }
 
-  async updateOrderStatusCancelled(req, res) {
-    const { orderId } = req.params;
+
+
+  async update(req, res) {
+    const { id } = req.params;
+
+    const user = { ...req.body };
+
+    if (isNaN(id) || parseInt(id) !== user.id) {
+      return res.sendStatus(400);
+    }
 
     try {
-      const order = await Order.findByPk(orderId);
 
+
+      const existingUser = await User.findOne({ where: { id: id } });
+
+      if (existingUser == null) {
+        return res.sendStatus(404);
+      }
+
+      if (user.email !== existingUser.email) {
+        if ((await User.findOne({ where: { email: user.email } })) !== null) {
+          return res.status(400).json({ error: "Email is taken" });
+        }
+      }
+
+     // user.password = await bcrypt.hash(user.password, 10);
+
+      await User.update(user, { where: { id: id } });
+
+      return res.sendStatus(204);
+    } catch (err) {
+
+      console.log(err);
+      return res.sendStatus(500);
+    }
+  }
+
+  async updateOrderStatusCancelled(req, res) {
+    const { id } = req.params;
+  
+    try {
+      const orderId = parseInt(id);
+  
+      let order = await Order.findOne({ where: { id: orderId } });
+  
       if (!order) {
         return res.status(404).json({ error: 'Заказ не найден' });
       }
-
+  
       order.status = 'Отменен';
       await order.save();
-
+  
       return res.status(200).json({ message: 'Статус заказа обновлен' });
     } catch (err) {
       console.error(err);
       return res.status(500).json({ error: 'Ошибка сервера' });
     }
   }
+  
+  
 
   async updateOrderStatusCompleted(req, res) {
     const { orderId } = req.params;

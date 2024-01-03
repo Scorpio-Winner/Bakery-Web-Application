@@ -3,6 +3,7 @@ const userController = require("../controllers/userController");
 const adminController = require("../controllers/adminController");
 const basketItemController = require("../controllers/basketItemController");
 const orderController = require("../controllers/orderController");
+const reviewController = require("../controllers/reviewController");
 
 
 const router = new Router();
@@ -19,6 +20,13 @@ router.delete("/delete-items/:basketId", basketItemController.deleteItemsByBaske
 router.post("/create-order", orderController.createOrder);
 router.get("/completed-orders/:id", orderController.getCompletedOrders);
 router.get("/in-process-orders/:id", orderController.getInProcessOrders);
+
+
+
+router.get("/review/:id", reviewController.getReviewByOrderID);
+router.post("/create-review", reviewController.createReview);
+router.put("/order/update/:id", orderController.updateOrderStatusCancelled);
+
 
 
 
